@@ -8,10 +8,17 @@ dependencies = [
     "bleak>=0.22.3",
     "construct>=2.10.70",
     "ipython>=8.31.0",
+    "pydantic-settings>=2.7.0",
     "pydantic>=2.10.4",
 ]
 [dependency-groups]
 dev = [
+    "mypy>=1.14.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-mypy>=0.10.3",
     "pytest-watcher>=0.4.3",
     "pytest>=8.3.4",
+    "ruff>=0.8.4",
 ]
+[tool.mypy]
+plugins = ['pydantic.mypy']
