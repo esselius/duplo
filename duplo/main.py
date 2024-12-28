@@ -19,7 +19,7 @@ async def main():
         print(msg)
 
     await train.client.start_notify(char_uuid, callback=train_events)
-    await train.client.write_gatt_char(char_uuid, )
+
     await sleep(10)
 
 

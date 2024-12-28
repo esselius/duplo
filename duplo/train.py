@@ -28,3 +28,5 @@ class Train():
 
         await self.client.connect()
 
+    async def send(self, msg):
+        await self.client.write_gatt_char(char_uuid, msg)

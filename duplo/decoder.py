@@ -17,8 +17,17 @@ HubAttachedIoMessage = Struct(
     "software_revision" / Int32sl,
 )
 
+PortInputFormatSetupSingleMessage = Struct(
+    "header" / HeaderMessage,
+    "port" / Int8ul,
+    "mode" / Int8ul,
+    "delta_interval" / Int32sl,
+    "notification_enabled" / Int8ul,
+)
+
 class MessageTypeEnum(IntEnum):
     HubAttachedIo = 4
+    PortInputFormatSetup = 65
 
 class Header(BaseModel):
     length: int
@@ -46,3 +55,6 @@ class HubAttachedIo(BaseModel):
     hardware_revision: int
     software_revision: int
 
+def set_length(data: HubAttachedIoMessage):
+    data["header"]["length"] = len(data) - 1
+    return data

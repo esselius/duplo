@@ -1,4 +1,4 @@
-from .decoder import HeaderMessage, Header, HubAttachedIoMessage, HubAttachedIo, IoTypeEnum, EventEnum, MessageTypeEnum
+from .decoder import HeaderMessage, HubAttachedIoMessage, HubAttachedIo, IoTypeEnum, EventEnum, MessageTypeEnum, PortInputFormatSetupSingleMessage
 
 def test_parse_header_msg():
     # Length = 15, Hub ID = 0x00, Message Type = 0x04
@@ -40,3 +40,24 @@ def test_parse_hub_attached_io():
     assert model.io_type_id == IoTypeEnum.Voltage
     assert model.hardware_revision == 1
     assert model.software_revision == 1
+
+    msg = HubAttachedIoMessage.build(model.model_dump())
+    assert msg[0] == 15
+    assert len(msg) == 16
+
+def test_encode_port_input_format_setup_single():
+    data = {
+        "header": {
+            "length": 0x0a,
+            "hub_id": 0,
+            "message_type": MessageTypeEnum.PortInputFormatSetup
+        },
+        "port": 0x14,
+        "mode": 0x00,
+        "delta_interval": 0x00000000,
+        "notification_enabled": 0x01
+    }
+
+    msg = PortInputFormatSetupSingleMessage.build(data)
+
+    assert msg == b'\x0a\x00\x04\x14\x00\x00\x00\x00\x00\x00\x00\x01'
