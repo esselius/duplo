@@ -1,54 +1,64 @@
-from typing import Any
-import bleak.backends
-import bleak.backends.device
-import pytest
-from unittest.mock import patch, AsyncMock
+from typing import Any, List, Optional, Type
+from bleak.backends.device import BLEDevice
+from bleak.backends.scanner import AdvertisementDataCallback, AdvertisementData
 
-import bleak
-
-from services.ble import BLE
+from services.ble import BLE, Device
 
 
-@pytest.fixture
-def mock_ble_discover() -> Any:
-    with patch("bleak.BleakScanner") as mock_bleak_scanner:
-        mock_bleak_scanner.discover = AsyncMock()
-        mock_bleak_scanner.discover.return_value = [
-            bleak.backends.device.BLEDevice(
-                address="00:11:22:33:44:55",
-                name="Train Base",
-                rssi=-60,
-                details=None,
+async def test_find_train() -> None:
+    class MockScanner:
+        def __init__(
+            self,
+            detection_callback: AdvertisementDataCallback,
+            service_uuids: List[str],
+        ) -> None:
+            self.detection_callback = detection_callback
+
+        async def __aenter__(self) -> "MockScanner":
+            mock_device = BLEDevice(
+                address="00:11:22:33:44:55", name="Train Base", rssi=-60, details=None
             )
-        ]
-        yield
+            mock_adv = AdvertisementData(
+                local_name="Train Base",
+                manufacturer_data={},
+                service_data={},
+                service_uuids=[],
+                tx_power=0,
+                rssi=-60,
+                platform_data=("", ""),
+            )
+            self.detection_callback(mock_device, mock_adv)
+            return self
 
-        mock_bleak_scanner.discover.assert_awaited_once()
+        async def __aexit__(
+            self,
+            exc_type: Optional[Type[BaseException]],
+            exc_value: Optional[BaseException],
+            traceback: Optional[Any],
+        ) -> Optional[bool]:
+            pass
 
-
-@pytest.fixture
-def mock_ble_connect() -> Any:
-    mock_client = AsyncMock()
-    mock_client.connect.return_value = True
-
-    with patch("bleak.BleakClient", return_value=mock_client):
-        yield
-
-    mock_client.connect.assert_awaited_once()
-
-
-async def test_find_train(mock_ble_discover: Any) -> None:
-    ble = BLE()
+    ble = BLE(scanner_cls=MockScanner)
 
     train = await ble.find_train()
 
-    assert isinstance(train, bleak.backends.device.BLEDevice)
+    assert isinstance(train, BLEDevice)
     assert train.address == "00:11:22:33:44:55"
     assert train.name == "Train Base"
 
 
-async def test_connect_to_train(mock_ble_discover: Any, mock_ble_connect: Any) -> None:
-    ble = BLE()
+async def test_device_connect() -> None:
+    class MockClient:
+        def __init__(self, device: BLEDevice) -> None:
+            pass
 
-    train = await ble.find_train()
-    await ble.connect(train)
+        async def connect(self) -> None:
+            pass
+
+    ble_device = BLEDevice(
+        address="00:11:22:33:44:55", name="Train Base", rssi=-60, details=None
+    )
+
+    device = Device(ble_device, client_cls=MockClient)
+
+    await device.connect()
