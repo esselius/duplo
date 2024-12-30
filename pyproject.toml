@@ -8,6 +8,7 @@ dependencies = [
     "bleak>=0.22.3",
     "construct>=2.10.70",
     "ipython>=8.31.0",
+    "pydantic-extra-types>=2.10.1",
     "pydantic-settings>=2.7.0",
     "pydantic>=2.10.4",
 ]
@@ -23,3 +24,6 @@ dev = [
 ]
 [tool.mypy]
 plugins = ['pydantic.mypy']
+strict = true
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
