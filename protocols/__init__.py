@@ -17,11 +17,11 @@ from .ble_toothbrush import ToothbrushEvent, State, Mode, Pressure
 
 __all__ = [
     "message_type",
-    "io_type", 
+    "io_type",
     "event",
     "duplo_speaker_sounds",
     "common_message_header",
-    "hub_attached_io_message_format", 
+    "hub_attached_io_message_format",
     "port_input_format_setup_single_format",
     "port_output_command",
     "port_output_command_feedback",
@@ -29,6 +29,6 @@ __all__ = [
     "ErrorCode",
     "ToothbrushEvent",
     "State",
-    "Mode", 
+    "Mode",
     "Pressure",
 ]

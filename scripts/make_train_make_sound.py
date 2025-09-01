@@ -12,7 +12,7 @@ async def main() -> None:
     async with BleakClient(train) as client:
         controller = TrainController(client)
         await controller.setup_notifications()
-        
+
         # Setup speaker port
         await controller.setup_port_input_format(port_id=1, mode=1)
         await asyncio.sleep(1)
@@ -22,7 +22,7 @@ async def main() -> None:
         await controller.play_sound(port_id=1, sound_id=5)  # Station sound
         await asyncio.sleep(1)
 
-        # Change light color  
+        # Change light color
         print("Setting light color...")
         await controller.set_light_color(port_id=17, color_id=5)
         await asyncio.sleep(1)
@@ -31,7 +31,7 @@ async def main() -> None:
         print("Setting motor speed to 50%...")
         await controller.set_motor_speed(port_id=0, speed=50)
         await asyncio.sleep(10)
-        
+
         # Stop the train
         print("Stopping train...")
         await controller.set_motor_speed(port_id=0, speed=0)

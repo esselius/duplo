@@ -27,18 +27,20 @@ async def main() -> None:
                         if parsed.state == "running" and last_state.state != "running":
                             print("Started brushing - starting train")
                             await controller.set_motor_speed(port_id=0, speed=50)
-                        
+
                         if parsed.state == "idle" and last_state.state == "running":
                             print("Stopped brushing - stopping train")
                             await controller.set_motor_speed(port_id=0, speed=0)
-                        
+
                         if (
                             parsed.pressure.mode_button_pressed
                             and not last_state.pressure.mode_button_pressed
                         ):
                             print("Pressed mode button - playing horn sound")
-                            await controller.play_sound(port_id=1, sound_id=9)  # Horn sound
-                    
+                            await controller.play_sound(
+                                port_id=1, sound_id=9
+                            )  # Horn sound
+
                     last_state = parsed
 
 

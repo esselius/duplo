@@ -61,7 +61,9 @@ def notification_handler(sender: BleakGATTCharacteristic, data: bytearray) -> No
             print("Port output command feedback")
 
 
-async def find_train(name: str = "Train Base", timeout: float = 30.0) -> Optional[BLEDevice]:
+async def find_train(
+    name: str = "Train Base", timeout: float = 30.0
+) -> Optional[BLEDevice]:
     """Find a DUPLO train by name."""
     device = await BleakScanner().find_device_by_name(name, timeout=timeout)
     return device
@@ -69,103 +71,111 @@ async def find_train(name: str = "Train Base", timeout: float = 30.0) -> Optiona
 
 class TrainController:
     """High-level controller for DUPLO train operations."""
-    
+
     def __init__(self, client: BleakClient):
         self.client = client
         self.config = config
-    
+
     async def setup_notifications(self) -> None:
         """Setup notification handling for train responses."""
         await self.client.start_notify(self.config.CHAR_UUID, notification_handler)
-    
+
     async def setup_port_input_format(self, port_id: int, mode: int = 1) -> None:
         """Setup input format for a specific port."""
-        payload = port_input_format_setup_single_format.build({
-            "header": {
-                "length": 10,
-                "hub_id": 0,
-                "message_type": message_type.port_input_format_setup_single,
-            },
-            "port_id": port_id,
-            "mode": mode,
-            "delta_interval": 1,
-            "notification_enabled": 1,
-        })
+        payload = port_input_format_setup_single_format.build(
+            {
+                "header": {
+                    "length": 10,
+                    "hub_id": 0,
+                    "message_type": message_type.port_input_format_setup_single,
+                },
+                "port_id": port_id,
+                "mode": mode,
+                "delta_interval": 1,
+                "notification_enabled": 1,
+            }
+        )
         await self.client.write_gatt_char(
             self.config.CHAR_UUID, payload, response=False
         )
-    
+
     async def set_motor_speed(self, port_id: int, speed: int) -> None:
         """Set motor speed for a specific port.
-        
+
         Args:
             port_id: Motor port ID (typically 0 for main motor)
             speed: Speed from -100 to 100, or 127 for brake
         """
-        payload = port_output_command.build({
-            "header": {
-                "length": 8,
-                "hub_id": 0,
-                "message_type": message_type.port_output_command,
-            },
-            "port_id": port_id,
-            "startup_and_completion_information": {
-                "startup": 1,
-                "completion": 1,
-            },
-            "sub_command": 0x51,
-            "payload": bytes([0, convert_speed_to_val(speed)]),
-        })
+        payload = port_output_command.build(
+            {
+                "header": {
+                    "length": 8,
+                    "hub_id": 0,
+                    "message_type": message_type.port_output_command,
+                },
+                "port_id": port_id,
+                "startup_and_completion_information": {
+                    "startup": 1,
+                    "completion": 1,
+                },
+                "sub_command": 0x51,
+                "payload": bytes([0, convert_speed_to_val(speed)]),
+            }
+        )
         await self.client.write_gatt_char(
             self.config.CHAR_UUID, payload, response=False
         )
-    
+
     async def play_sound(self, port_id: int, sound_id: int) -> None:
         """Play a sound on the train speaker.
-        
+
         Args:
             port_id: Speaker port ID (typically 1)
             sound_id: Sound ID to play
         """
-        payload = port_output_command.build({
-            "header": {
-                "length": 8,
-                "hub_id": 0,
-                "message_type": message_type.port_output_command,
-            },
-            "port_id": port_id,
-            "startup_and_completion_information": {
-                "startup": 1,
-                "completion": 1,
-            },
-            "sub_command": 0x51,
-            "payload": bytes([1, sound_id]),
-        })
+        payload = port_output_command.build(
+            {
+                "header": {
+                    "length": 8,
+                    "hub_id": 0,
+                    "message_type": message_type.port_output_command,
+                },
+                "port_id": port_id,
+                "startup_and_completion_information": {
+                    "startup": 1,
+                    "completion": 1,
+                },
+                "sub_command": 0x51,
+                "payload": bytes([1, sound_id]),
+            }
+        )
         await self.client.write_gatt_char(
             self.config.CHAR_UUID, payload, response=False
         )
-    
+
     async def set_light_color(self, port_id: int, color_id: int) -> None:
         """Set light color on the train.
-        
+
         Args:
             port_id: Light port ID (typically 17)
             color_id: Color ID to set
         """
-        payload = port_output_command.build({
-            "header": {
-                "length": 8,
-                "hub_id": 0,
-                "message_type": message_type.port_output_command,
-            },
-            "port_id": port_id,
-            "startup_and_completion_information": {
-                "startup": 1,
-                "completion": 1,
-            },
-            "sub_command": 0x51,
-            "payload": bytes([0, color_id]),
-        })
+        payload = port_output_command.build(
+            {
+                "header": {
+                    "length": 8,
+                    "hub_id": 0,
+                    "message_type": message_type.port_output_command,
+                },
+                "port_id": port_id,
+                "startup_and_completion_information": {
+                    "startup": 1,
+                    "completion": 1,
+                },
+                "sub_command": 0x51,
+                "payload": bytes([0, color_id]),
+            }
+        )
         await self.client.write_gatt_char(
             self.config.CHAR_UUID, payload, response=False
         )

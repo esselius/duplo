@@ -11,8 +11,16 @@ A Python library for controlling DUPLO trains via Bluetooth Low Energy (BLE), wi
 
 ## Installation
 
+First, install uv if you don't have it:
+
 ```bash
-pip install -e .
+pip install uv
+```
+
+Then install the project dependencies:
+
+```bash
+uv sync
 ```
 
 ## Usage
@@ -68,12 +76,12 @@ duplo/
 ### Running Tests
 
 ```bash
-pytest tests/ -v
+uv run pytest tests/ -v
 ```
 
 ### Code Quality
 
 ```bash
-ruff check .
-mypy . --ignore-missing-imports
+uv run ruff check .
+uv run mypy .
 ```
