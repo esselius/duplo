@@ -5,15 +5,16 @@ from bleak.backends.scanner import AdvertisementData
 
 
 async def main() -> None:
-    scanner = BleakScanner()
-
     def callback(device: BLEDevice, advertisement_data: AdvertisementData) -> None:
-        print(len(scanner.discovered_devices_and_advertisement_data))
+        print(f"Found device: {device.name} ({device.address})")
+        if advertisement_data.manufacturer_data:
+            print(f"  Manufacturer data: {advertisement_data.manufacturer_data}")
 
-    scanner.register_detection_callback(callback)
+    scanner = BleakScanner(detection_callback=callback)
     await scanner.start()
     await asyncio.sleep(120)
     await scanner.stop()
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
