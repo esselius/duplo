@@ -12,21 +12,7 @@ A Python library and command-line toolkit for controlling DUPLO trains via Bluet
 
 ## Installation
 
-### Using UV (Recommended)
-
-First, install uv if you don't have it:
-
-```bash
-pip install uv
-```
-
-Then install the project dependencies:
-
-```bash
-uv sync
-```
-
-### Using Nix
+### Using Nix (Recommended)
 
 If you have Nix installed, you can use the provided shell environment which includes all necessary dependencies:
 
@@ -42,6 +28,20 @@ uv sync
 ```
 
 The Nix shell provides a reproducible development environment with `uv` pre-installed.
+
+### Using UV
+
+First, install uv if you don't have it:
+
+```bash
+pip install uv
+```
+
+Then install the project dependencies:
+
+```bash
+uv sync
+```
 
 ## Library Usage
 
