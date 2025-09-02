@@ -13,10 +13,10 @@ dependencies = [
 ]
 
 [project.scripts]
-duplo-demo = "scripts.make_train_make_sound:main"
-duplo-toothbrush = "scripts.control_train_with_toothbrush:main"
-duplo-listen-toothbrush = "scripts.listen_to_toothbrush_events:main"
-duplo-listen-broadcast = "scripts.listen_to_broadcast:main"
+duplo-demo = "duplo.cli.demo:main"
+duplo-toothbrush = "duplo.cli.toothbrush:main"
+duplo-listen-toothbrush = "duplo.cli.listen_toothbrush:main"
+duplo-listen-broadcast = "duplo.cli.broadcast:main"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
@@ -24,7 +24,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["core*", "protocols*", "services*", "app*"]
+include = ["core*", "protocols*", "services*", "app*", "duplo*"]
 [dependency-groups]
 dev = [
     "construct>=2.10.68",
